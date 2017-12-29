@@ -10,8 +10,8 @@ wilddogVideo.regService("call", call);
 
 
 const config = {
-  authDomain: config.wd.syncAppId + '.wilddog.com',
-  syncURL: 'https://' + config.wd.syncAppId + '.wilddogio.com'
+  authDomain: config.wd.syncAppid + '.wilddog.com',
+  syncURL: 'https://' + config.wd.syncAppid + '.wilddogio.com'
 }
 wilddog.initializeApp(config);
 
