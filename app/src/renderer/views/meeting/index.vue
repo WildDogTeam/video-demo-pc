@@ -258,7 +258,7 @@ export default {
     };
   },
   created() {
-     BrowserWindow.setResizable(true);
+    BrowserWindow.setResizable(true);
     BrowserWindow.maximize();
 
     let roomName = location.hash.split("?")[1];
@@ -336,15 +336,14 @@ export default {
     BrowserWindow.setResizable(false);
     window.addEventListener("beforeunload", event => this.leaveRoom());
 
-    if(BrowserWindow.isMaximized()) {
-        this.wdBoard.setOption({
+    window.onresize = () => {
+      this.wdBoard.setOption({
         width: this.$refs.board.clientWidth,
         height: this.$refs.board.clientHeight,
         write: true
       });
     }
 
- // window.onresize = () => { // };
     this.updateTime();
     this.addUid();
   },
@@ -491,9 +490,6 @@ export default {
         const data = snapshot.val()
         if (!data) wilddog.sync().ref(`room/${this.roomId}`).remove();
       })
-      // if (this.participants.length == 0) {
-      //   wilddog.sync().ref(`room/${this.roomId}`).remove();
-      // }
       window.onresize = null;
     },
     addToolListener(tool) {
@@ -589,7 +585,7 @@ export default {
       } else {
         const object = this.wdBoard.getActiveObject();
         tool.active = true;
-        this.currentTool.color = tool.color || "red";
+        this.currentTool.color = tool.color || "rgb(252,61,57)";
         let options = null;
         if (this.currentTool.type == "IText") {
           this.isStroke = false;

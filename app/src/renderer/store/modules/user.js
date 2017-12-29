@@ -6,14 +6,12 @@ import base from "wilddog-video-base";
 import call from "wilddog-video-call";
 window.wilddogVideo = base.wilddogVideo;
 wilddogVideo.regService("call", call);
-// var init = false
 
-
-const config = {
+const wdConfig = {
   authDomain: config.wd.syncAppid + '.wilddog.com',
   syncURL: 'https://' + config.wd.syncAppid + '.wilddogio.com'
 }
-wilddog.initializeApp(config);
+wilddog.initializeApp(wdConfig);
 
 const user = {
   state: {

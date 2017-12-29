@@ -108,6 +108,7 @@ const rendererConfig = {
       'utils': path.resolve(__dirname, 'app/src/renderer/utils'),
       'store': path.resolve(__dirname, 'app/src/renderer/store'),
       'router': path.resolve(__dirname, 'app/src/renderer/router'),
+      'config': path.resolve(__dirname, 'app/src/renderer/config.js')
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node'],
     modules: [

@@ -5,7 +5,6 @@ import Electron from 'vue-electron'
 import App from './App'
 import router from './router'
 import store from './store'
-// import { getToken } from 'utils/auth';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 
