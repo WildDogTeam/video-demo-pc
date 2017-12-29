@@ -1,0 +1,12 @@
+.DS_Store
+app/dist/*.js
+builds/*
+dist/*
+node_modules/
+npm-debug.log
+npm-debug.log.*
+thumbs.db
+!.gitkeep
+build/
+/app/dist
+package-lock.json
