@@ -4,7 +4,7 @@
 
 ## 准备环境
 
-在项目的`src/config.js`文件里，运行项目前需要配置一些信息
+在项目的`app/src/renderer/config.js`文件里，运行项目前需要配置一些信息
 
 ```js
 module.exports = {
