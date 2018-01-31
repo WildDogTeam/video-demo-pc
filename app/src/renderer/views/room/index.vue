@@ -2,18 +2,25 @@
   <div class="room">
     <div class="head">
       <div class="roomId">房间号：{{ roomId }}</div>
-      <div class="time"><i class="icon-2"></i> {{ time }}</div>
+      <div class="time">
+        <i class="icon-2"></i> {{ time }}</div>
       <ul class="right clearfix">
         <li class="item" ref="copy" style="opacity: 0;">{{ windowUrl }}</li>
-        <li class="item copy" @click="copy"><i class="icon icon-16"></i><span>邀请他人</span></li>
+        <li class="item copy" @click="copy">
+          <i class="icon icon-16"></i>
+          <span>邀请他人</span>
+        </li>
         <router-link to="/call" tag="li" class="item">离开房间</router-link>
       </ul>
     </div>
     <div class="content">
       <ul class="features clearfix">
-        <li class="full-item"><i class="icon icon--8" @click="sorry"></i>屏幕共享</li>
-        <li class="full-item"><i class="icon icon--7" @click="sorry"></i>云端录制</li>
-        <li class="full-item"><i class="icon icon-6" @click="sorry"></i>插 播</li>
+        <li class="full-item">
+          <i class="icon icon--8" @click="sorry"></i>屏幕共享</li>
+        <li class="full-item">
+          <i class="icon icon--7" @click="sorry"></i>云端录制</li>
+        <li class="full-item">
+          <i class="icon icon-6" @click="sorry"></i>插 播</li>
       </ul>
       <div class="video-box">
         <ul class="inner clearfix">
@@ -23,8 +30,12 @@
               <span class="name">{{ name }}</span>
               <div class="wrap">
                 <!-- <span class="translate" @click="switchCamera"><i class="icon-"></i></span> -->
-                <span class="media" @click="enableAudio"><i class="icon-"></i></span>
-                <span class="video" @click="enableVideo"><i class="icon-"></i></span>
+                <span class="media" @click="enableAudio">
+                  <i class="icon-"></i>
+                </span>
+                <span class="video" @click="enableVideo">
+                  <i class="icon-"></i>
+                </span>
               </div>
             </div>
           </li>
@@ -34,8 +45,12 @@
               <!-- <span class="name">{{users[item.streamOwners[0].userId] ? users[item.streamOwners[0].userId].name : ''}}</span> -->
               <span class="name" ref="name">May</span>
               <div class="wrap clearfix">
-                <span class="media" @click="enableAudio"><i class="icon-" :data-stream="index"></i></span>
-                <span class="video" @click="enableVideo"><i class="icon-" :data-stream="index"></i></span>
+                <span class="media" @click="enableAudio">
+                  <i class="icon-" :data-stream="index"></i>
+                </span>
+                <span class="video" @click="enableVideo">
+                  <i class="icon-" :data-stream="index"></i>
+                </span>
               </div>
             </div>
           </li>
@@ -236,8 +251,8 @@ export default {
           setInterval(() => {
             this.time =
               snapshot.val() > date ?
-              realSysTime(date) :
-              realSysTime(snapshot.val());
+                realSysTime(date) :
+                realSysTime(snapshot.val());
           }, 1000);
         }
       });
@@ -249,24 +264,22 @@ export default {
       this.userRef.child(this.uid).remove();
     },
     leaveRoom() {
-      this.localStream.close();
-      this.roomInstance.disconnect();
-      console.log("removeUid");
+      window.onresize = null;
+      if (this.localStream) this.localStream.close();
+      try {
+        this.roomInstance.disconnect();
+      } catch (e) {
+        console.log(e)
+      }
       this.removeUid();
       this.userRef.once('value', (snapshot) => {
         const data = snapshot.val()
         if (!data) wilddog.sync().ref(`room/${this.roomId}`).remove();
       })
-      // if (this.participants.length == 0) {
-      //   wilddog
-      //     .sync()
-      //     .ref(`room/${this.roomId}`)
-      //     .remove();
-      // }
     }
   },
   watch: {
-    localStream: function(argument) {
+    localStream: function (argument) {
       this.roomInstance.connect();
       this.roomInstance.on("connected", () => {
         console.log("connected success");

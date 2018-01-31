@@ -34,6 +34,38 @@ export function parseTime(time, cFormat) {
   return time_str;
 }
 
+export function sec2time(s) {
+  var t;
+  if (s > -1) {
+    var hour = Math.floor(s / 3600);
+    var min = Math.floor(s / 60) % 60;
+    var sec = s % 60;
+    if (hour < 10) {
+      t = '0' + hour + ":";
+    } else {
+      t = hour + ":";
+    }
+
+    if (min < 10) { t += "0"; }
+    t += min + ":";
+    if (sec < 10) { t += "0"; }
+    t += sec;
+  }
+  return t;
+}
+
+export function time2sec(time) {
+  var s = '';
+  var hour = time.split(':')[0];
+  var min = time.split(':')[1];
+  var sec = time.split(':')[2];
+
+  s = Number(hour * 3600) + Number(min * 60) + Number(sec);
+
+  return s;
+};
+
+
 export function formatTime(time, option) {
   time = +time * 1000;
   const d = new Date(time);
@@ -92,16 +124,14 @@ export function randomName(num) {
 }
 
 export function randomFaceurl() {
-  let url = `https://img.wdstatic.cn/video-demo/Head${Math.floor(Math.random()*10+1)}.png`;
+  let url = `https://img.wdstatic.cn/imdemo/${Math.floor(Math.random() * 10 + 1)}.png`;
   return url
 }
 
-
-export function realSysTime(initTime) {
+export function realSysTime(val) {
   const currentDate = new Date().getTime(); //结束时间
-  const time = currentDate - initTime; //时间差的毫秒数
-
-  const leave1 = time % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
+  const roomTime = currentDate - val; //时间差的毫秒数
+  const leave1 = roomTime % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
   var hours = Math.floor(leave1 / (3600 * 1000)) + "";
   if (hours.length == 1) hours = "0" + hours;
   //计算相差分钟数

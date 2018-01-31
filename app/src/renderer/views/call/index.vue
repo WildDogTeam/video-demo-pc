@@ -39,7 +39,7 @@
           <span class="self-uid">UID:{{invitedInfo.uid}}</span>
           <button class="btn org-btn" @click='invite'>发起视频通话</button>
         </div>
-        <div class="version">V3.0.0</div>
+        <div class="version">V {{appVersion}}</div>
       </div>
     </div>
     <!--邀请别人-->
@@ -97,11 +97,13 @@ import selectRoom from "./selectRoom";
 import { Invite, Invited } from "views/status";
 import dialog from "@/components/Dialog";
 import config from 'config';
+import appInfo from '../../../../package';
 
 export default {
   name: "call",
   data() {
     return {
+      appVersion: appInfo.version,
       userList: {},
       selectDimensionShow: false,
       currentIndex: null,
@@ -170,7 +172,7 @@ export default {
     });
   },
   beforeDestroy() {
-    this.localStream.close();
+    if (this.localStream) this.localStream.close();
   },
   methods: {
     //显示列表的具体信息

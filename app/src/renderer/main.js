@@ -7,9 +7,18 @@ import router from './router'
 import store from './store'
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import * as filters from './filters'
 
 Vue.config.productionTip = false
 Vue.use(Electron)
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+});
+
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+});
 
 const whiteList = ['/login'];
 router.beforeEach((to, from, next) => {
@@ -19,7 +28,9 @@ router.beforeEach((to, from, next) => {
         NProgress.start();
         next()
       } else {
-        next({ path: '/' });
+        next({
+          path: '/'
+        });
       }
     } else {
       if (whiteList.indexOf(to.path) !== -1) {
