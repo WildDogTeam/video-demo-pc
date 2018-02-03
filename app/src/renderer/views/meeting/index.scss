@@ -2,7 +2,7 @@
 * @Author: liujie3612
 * @Date:   2018-01-26 14:43:29
  * @Last Modified by: ihoey
- * @Last Modified time: 2018-02-03 14:00:48
+ * @Last Modified time: 2018-02-03 15:09:14
 */
 
 .meeting {
@@ -267,10 +267,17 @@
           cursor: move;
           .title {
             float: left;
-            max-width: 400px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
+            .title-name {
+              float: left;
+              display: block;
+              max-width: 400px;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
+            }
+            .title-type {
+              float: left;
+            }
           }
           .close {
             float: right;
@@ -685,10 +692,17 @@
           border-top-right-radius: 10px;
           .officefile-title {
             float: left;
-            max-width: 400px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
+            .officefile-name {
+              float: left;
+              display: block;
+              max-width: 400px;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
+            }
+            .officefile-type {
+              float: left;
+            }
           }
           .head-close {
             float: right;
