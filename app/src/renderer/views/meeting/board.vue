@@ -38,16 +38,19 @@
       </div>
     </div>
     <office-file :currentFile="currentFile" :boardRef="boardRef" :boardObj="boardObj" @onBoardChange="onBoardChange" @delCurrentFile="delCurrentFile" @pageLast="pageLast" @pageNext="pageNext"></office-file>
-    <div class="insert-video" v-show="document.videoFiles.externalInputs.length !== 0">
+    <div class="insert-video" v-show="document.videoFiles.externalInputs.length !== 0" ref="videoBox">
       <div class="video-header">
         <span class="title">{{ document.videoFiles.video.name }} </span>
         <span class="close" @click="controlInsertVideo('stop')">
           <i class="icon-25"></i>
         </span>
       </div>
-      <video autoplay="autoplay" ref="insertStream"></video>
-      <div class="video-controls" v-show='document.videoFiles.video.funcsShow'>
-        <div class="funcs">
+      <div>
+        <video autoplay="autoplay" ref="insertStream"></video>
+        <img src="../../assets/images/ware.gif" alt="" class="ware" v-show='!document.videoFiles.video.ismp4'>
+      </div>
+      <div class="video-controls">
+        <div class="funcs" v-show='document.videoFiles.video.funcsShow'>
           <span class="func pause" @click="controlInsertVideo('pause')" v-show='document.videoFiles.video.play'>
             <i class="icon icon--19"></i>
           </span>
@@ -61,7 +64,7 @@
             <i class="icon icon--21"></i>
           </span>
         </div>
-        <div class="time">{{ document.videoFiles.video.num == 0 ? '00:00:00' : convertTime(document.videoFiles.video.num)}}/{{ document.videoFiles.video.totalTime}}</div>
+        <div class="time" v-show='document.videoFiles.video.funcsShow'>{{ document.videoFiles.video.num == 0 ? '00:00:00' : convertTime(document.videoFiles.video.num)}}/{{ document.videoFiles.video.totalTime}}</div>
       </div>
     </div>
   </div>
@@ -73,7 +76,7 @@ import Bus from './Bus.js';
 
 import { getList, controlFile } from "api/uploadVideo";
 import { genToken, initImageUpload, uploadClient } from "@/utils/qiniu";
-import { sec2time, time2sec } from "@/utils/index.js";
+import { sec2time, time2sec, drag } from "@/utils/index.js";
 
 import WildBoard from "wilddog-board";
 window.WildBoard = WildBoard;
@@ -104,7 +107,7 @@ export default {
         currentTab: false,
         officeFiles: {
           isEmpty: true,
-          fileLists: {}
+          fileLists: []
         },
         videoFiles: {
           isEmpty: true,
@@ -116,7 +119,8 @@ export default {
             funcsShow: false,
             num: 0,
             totalTime: '00:00:00',
-            timer: null
+            timer: null,
+            ismp4: true
           }
         }
       },
@@ -354,6 +358,8 @@ export default {
     uploader.bind('Error', function (uploader, err) {
       Bus.$emit("operateVideoFail", err.message)
     });
+
+    drag(this.$refs.board, this.$refs.videoBox)
   },
   methods: {
     convertTime(num) {
@@ -502,9 +508,6 @@ export default {
     objectDeselectedHandler(object) {
       this.toolBar.map(e => ((e.active = false), (this.openStyle = false)));
     },
-    delOfficeFile(type, key) {
-      this.documentRef.child(`${type == "office" ? "officeFiles" : "videoFiles"}/${key}`).remove();
-    },
     operateVideoSuccess() {
       this.getVideoList();
     },
@@ -513,9 +516,6 @@ export default {
       wilddog.sync().ref(`room/${this.roomId}/curFile`).set({
         'name': name
       })
-    },
-    openDocument() {
-      this.document.status = true;
     },
     controlInsertVideo() {
       const arg = arguments[0];
@@ -567,7 +567,14 @@ export default {
           }
         }
         this.document.officeFiles.isEmpty = data ? false : true;
-        this.document.officeFiles.fileLists = data;
+        this.document.officeFiles.fileLists = [];
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            const element = data[key];
+            element.key = key
+            this.document.officeFiles.fileLists.push(element)
+          }
+        }
       });
     },
 
@@ -579,7 +586,10 @@ export default {
 
     useOfficeFile(key) {
       this.document.status = false;
-      var data = this.document.officeFiles.fileLists[key];
+      var data = {};
+      this.document.officeFiles.fileLists.map(e => {
+        if (e.key == key) data = e
+      })
       data.currentPage = 1;
       data.index = 1;
       data.top = `30px`;
@@ -589,11 +599,9 @@ export default {
     },
 
     delOfficeFile(key) {
-      this.$parent.dialogOption.text = "确认删除所选文档";
+      this.$parent.dialogOption.text = "确认删除所选文档？";
       this.$parent.showDialog = true;
-      this.$parent.$refs.dialog
-        .confirm()
-        .then(() => {
+      this.$parent.$refs.dialog.confirm().then(() => {
           this.documentRef.child(`officeFiles/${key}`).remove();
           if (this.currentFile[key]) {
             this.boardRef.child(`currentFile${key}`).remove();
@@ -649,6 +657,12 @@ export default {
             this.document.videoFiles.video.num++
           }
         }, 1000)
+      }
+
+      if (stream.captureVideo == false) {
+        this.document.videoFiles.video.ismp4 = false
+      } else {
+        this.document.videoFiles.video.ismp4 = true
       }
 
       this.$refs.insertStream && stream.attach(this.$refs.insertStream);
