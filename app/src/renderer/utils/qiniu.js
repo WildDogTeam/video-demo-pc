@@ -163,7 +163,7 @@ export function uploadClient(params) {
       flash_swf_url: 'js/plupload/Moxie.swf', //引入flash,相对路径
       filters: [{
         title: "office",
-        extensions: "pdf,doc,docx,ppt,pptx,pptm"
+        extensions: "pdf,doc,docx,ppt,pptx"
       }],
     })
   }

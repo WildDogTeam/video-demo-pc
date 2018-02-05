@@ -72,7 +72,7 @@ export default {
       time: "00:00:00",
       showDialog: false,
       dialogOption: {
-        width: "300px",
+        width: "340px",
         height: "200px",
         title: "温馨提示",
         text: "复制成功!!!",

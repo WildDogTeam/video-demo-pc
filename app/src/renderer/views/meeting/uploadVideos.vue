@@ -74,6 +74,13 @@ export default {
   methods: {
     uploadVideoFile(e) {
       Bus.$emit("controlLoading", true);
+      this.$parent.$parent.dialogOption.text = "文件上传中，上传成功后将显示在文件列表中";
+      this.$parent.$parent.showDialog = true;
+      this.$parent.$parent.$refs.dialog.confirm().then(() => {
+        this.$parent.$parent.showDialog = false;
+      }).catch(() => {
+        this.$parent.$parent.showDialog = false;
+      });
       let file = e.target.files[0]
       if (file.name.indexOf('mp3') > -1 || file.name.indexOf('mp4') > -1) {
         let payload = new FormData();
@@ -86,14 +93,15 @@ export default {
           const data = response.data
           if (data.code == 0) {
             this.$emit("operateVideoSuccess");
+            e.target.value = ''
           }
         })
       } else {
+        Bus.$emit("controlLoading", false);
         this.$parent.$parent.dialogOption.text = "上传文件格式错误";
         this.$parent.$parent.showDialog = true;
         this.$parent.$parent.$refs.dialog.confirm().then(() => {
           this.$parent.$parent.showDialog = false;
-          Bus.$emit("waitingLoading", false);
         }).catch(() => {
           this.$parent.$parent.showDialog = false;
         });

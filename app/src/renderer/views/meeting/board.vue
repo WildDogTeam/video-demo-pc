@@ -40,14 +40,17 @@
     <office-file :currentFile="currentFile" :boardRef="boardRef" :boardObj="boardObj" @onBoardChange="onBoardChange" @delCurrentFile="delCurrentFile" @pageLast="pageLast" @pageNext="pageNext"></office-file>
     <div class="insert-video" v-show="document.videoFiles.externalInputs.length !== 0" ref="videoBox">
       <div class="video-header">
-        <div class="title"><span class="title-name">{{ document.videoFiles.video.name | splitType}}</span><span class="title-type">{{document.videoFiles.video.name | fileType}}</span></div>
+        <div class="title">
+          <span class="title-name">{{ document.videoFiles.video.name | splitType}}</span>
+          <span class="title-type">{{document.videoFiles.video.name | splitName}}</span>
+        </div>
         <span class="close" @click="controlInsertVideo('stop')">
           <i class="icon-25"></i>
         </span>
       </div>
       <div>
         <video autoplay="autoplay" ref="insertStream"></video>
-        <img src="../../assets/images/ware.gif" alt="" class="ware" v-show='!document.videoFiles.video.ismp4'>
+        <img src="../../assets/images/ware.gif" alt="" class="ware" v-show='!document.videoFiles.video.ismp4' ondragstart="return false;" oncontextmenu="return false;">
       </div>
       <div class="video-controls">
         <div class="funcs" v-show='document.videoFiles.video.funcsShow'>
@@ -316,7 +319,7 @@ export default {
   },
   mounted() {
     window.onresize = () => {
-      this.wdBoard.setOption({
+      this.boardObj.bigBoard.setOption({
         width: this.$refs.board.clientWidth,
         height: this.$refs.board.clientHeight,
         write: true
@@ -331,6 +334,13 @@ export default {
 
     uploader.bind("FilesAdded", (uploader, files) => {
       this.document.loading = true;
+      this.$parent.dialogOption.text = "文件上传中，上传成功后将显示在文件列表中";
+      this.$parent.showDialog = true;
+      this.$parent.$refs.dialog.confirm().then(() => {
+        this.$parent.showDialog = false;
+      }).catch(() => {
+        this.$parent.showDialog = false;
+      });
       uploader.start();
     });
 
@@ -602,12 +612,12 @@ export default {
       this.$parent.dialogOption.text = "确认删除所选文档？";
       this.$parent.showDialog = true;
       this.$parent.$refs.dialog.confirm().then(() => {
-          this.documentRef.child(`officeFiles/${key}`).remove();
-          if (this.currentFile[key]) {
-            this.boardRef.child(`currentFile${key}`).remove();
-          }
-          this.$parent.showDialog = false;
-        })
+        this.documentRef.child(`officeFiles/${key}`).remove();
+        if (this.currentFile[key]) {
+          this.boardRef.child(`currentFile${key}`).remove();
+        }
+        this.$parent.showDialog = false;
+      })
         .catch(() => {
           this.$parent.showDialog = false;
         });
@@ -652,11 +662,16 @@ export default {
         this.document.videoFiles.video.totalTime = sec2time(stream.attributes.duration)
         this.document.videoFiles.video.num = 0;
 
+        if (this.document.videoFiles.video.timer) {
+          clearInterval(this.document.videoFiles.video.timer)
+        }
         this.document.videoFiles.video.timer = setInterval(() => {
           if (this.document.videoFiles.video.num < stream.attributes.duration) {
             this.document.videoFiles.video.num++
           }
         }, 1000)
+      } else {
+        this.document.videoFiles.video.funcsShow = false;
       }
 
       if (stream.captureVideo == false) {
