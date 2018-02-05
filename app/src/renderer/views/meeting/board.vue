@@ -664,6 +664,8 @@ export default {
             this.document.videoFiles.video.num++
           }
         }, 1000)
+      }else{
+        this.document.videoFiles.video.funcsShow = false;
       }
 
       if (stream.captureVideo == false) {
