@@ -40,7 +40,7 @@
     <office-file :currentFile="currentFile" :boardRef="boardRef" :boardObj="boardObj" @onBoardChange="onBoardChange" @delCurrentFile="delCurrentFile" @pageLast="pageLast" @pageNext="pageNext"></office-file>
     <div class="insert-video" v-show="document.videoFiles.externalInputs.length !== 0" ref="videoBox">
       <div class="video-header">
-        <div class="title"><span class="title-name">{{ document.videoFiles.video.name | splitType}}</span><span class="title-type">{{document.videoFiles.video.name | fileType}}</span></div>
+        <div class="title"><span class="title-name">{{ document.videoFiles.video.name | splitType}}</span><span class="title-type">{{document.videoFiles.video.name | splitName}}</span></div>
         <span class="close" @click="controlInsertVideo('stop')">
           <i class="icon-25"></i>
         </span>
@@ -331,6 +331,13 @@ export default {
 
     uploader.bind("FilesAdded", (uploader, files) => {
       this.document.loading = true;
+      this.$parent.dialogOption.text = "文件上传中，上传成功后将显示在文件列表中";
+      this.$parent.showDialog = true;
+      this.$parent.$refs.dialog.confirm().then(() => {
+        this.$parent.showDialog = false;
+      }).catch(() => {
+        this.$parent.showDialog = false;
+      });
       uploader.start();
     });
 

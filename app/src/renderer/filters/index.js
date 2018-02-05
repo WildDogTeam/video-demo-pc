@@ -71,13 +71,18 @@ export function fileType(e) {
   return type;
 }
 
-export function readablizeBytes(bytes) {
+export function readablizeBytes(bytes, num) {
   const s = ["Bytes", "KB", "MB", "GB", "TB", "PB"];
   const e = Math.floor(Math.log(bytes) / Math.log(1024));
-  return (bytes / Math.pow(1024, Math.floor(e))).toFixed(2) + " " + s[e];
+  return (bytes / Math.pow(1024, Math.floor(e))).toFixed(num) + " " + s[e];
 }
 
 export function splitType(e) {
   let type = e.split(".");
   return e.replace(type[1], '');
+}
+
+export function splitName(e) {
+  let type = e.split(".");
+  return e.replace(type[0], '').replace('.', '');
 }
