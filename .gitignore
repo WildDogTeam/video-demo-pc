@@ -10,3 +10,4 @@ thumbs.db
 build/
 /app/dist
 package-lock.json
+app/src/renderer/config.js.bak

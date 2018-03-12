@@ -60,7 +60,7 @@ export default {
     this.roomInstance = wilddogVideo.room(this.roomId);
     // 创建一个同时有音频和视频的媒体流
     wilddogVideo.createLocalStream({
-      captureAudio: false,
+      captureAudio: true,
       captureVideo: true,
       dimension: this.dimension || "480p",
       maxFPS: 15
